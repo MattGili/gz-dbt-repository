@@ -2,6 +2,7 @@ WITH sub1 AS(
 SELECT
 date_date,
 orders_id,
+count(*) as nb_trans,
 sum(quantity) as qty,
 sum(revenue) as revenue
 from {{ref("stg_gz_raw_data__sales")}}
@@ -27,7 +28,8 @@ sub1.qty,
 sub1.revenue-sub2.purchase_cost as margin,
 ship.shipping_fee,
 ship.logcost,
-ship.ship_cost
+ship.ship_cost,
+nb_trans
 FROM sub1 
 JOIN sub2 on sub1.orders_id = sub2.orders_id
 JOIN {{ref("stg_gz_raw_data__ship")}} AS ship on sub1.orders_id = ship.orders_id
@@ -39,7 +41,11 @@ round(revenue+shipping_fee-(logcost+ship_cost+purchase_cost),2) as margin_op,
 round(revenue,2) as revenue,
 qty,
 round(purchase_cost,2) as purchase_cost,
-round(margin,2) as margin
+round(margin,2) as margin,
+shipping_fee,
+logcost,
+ship_cost,
+nb_trans
 from sub3
 
 
