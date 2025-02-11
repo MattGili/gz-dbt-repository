@@ -2,8 +2,8 @@ sources:
   - name: gz_raw_data
     tables: 
       - name: sales
-        identifier: raw_gz_sales
+        identifier: ventes_brutes_gz
       - name: product
-        identifier: raw_gz_product
+        identifier: produit_brut_gz
       - name: ship
-        identifier: raw_gz_ship
+        identifier: navire_gz_brut
