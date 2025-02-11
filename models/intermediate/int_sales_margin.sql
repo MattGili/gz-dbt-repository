@@ -2,7 +2,7 @@ WITH sub1 AS(
 SELECT
 date_date,
 orders_id,
-count(*) as nb_trans,
+count(distinct orders_id) as nb_trans,
 sum(quantity) as qty,
 sum(revenue) as revenue
 from {{ref("stg_gz_raw_data__sales")}}
