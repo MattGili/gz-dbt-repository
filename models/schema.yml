@@ -3,7 +3,54 @@ sources:
     tables: 
       - name: sales
         identifier: ventes_brutes_gz
+        description: vente des produits greenweez, chaque ligne représente une orders_id
+        columns:
+          - name: date_date
+            description: date d'achat
+          - name: orders_id
+            description: order du client qui est unique 
+          - name: product_id
+            description: fait référence au produit que le client à acheté, on peut le retrouver dans la table product
+          - name: revenue
+            description: revenu du produit par order
+          - name: quantity
+            description: quantité de produit acheté
+        tests:
+          - unique:
+              column_name: "(orders_id || '-' || pdt_id)"
+          - not_null:
+              column_name: [date_date,orders_id,pdt_id,revenue,quantity]
+        #freshness testing
+        loaded_at_field: "CAST(date_date AS TIMESTAMP)"
+        freshness:
+          warn_after: {count: 90, period: day }
       - name: product
         identifier: produit_brut_gz
+        description: table des produits qui nous permet de connaitre les infos sur les produits
+        columns:
+          - name: products_id
+            description: id unique du produit primary key
+          - name: purchase_price
+            description: prix de vente du produit
+        tests:
+          - unique:
+              column_name: products_id
+          - not_null:
+              column_name: [products_id,purchase_price]
       - name: ship
         identifier: navire_gz_brut
+        description: table des shiping cost
+        columns:
+          - name: orders_id
+            description: clé secondaire de sales
+          - name: shipping_fee
+            description: frais d'envoi que le client paie
+          - name: logcost
+            description: frais de logistic de la commende 
+          - name: ship_cost
+            description: frais d'envoi que greenweez paie
+        tests:
+          - unique:
+              column_name: orders_id
+          - not_null:
+              column_name: [orders_id,shipping_fee,logcost,ship_cost]
