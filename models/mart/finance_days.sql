@@ -1,8 +1,8 @@
 select 
 date_date,
-sum(f.nb_trans) as nb_transactions,
+count(f.nb_trans) as nb_transactions,
 sum(revenue) as total_revenue,
-sum(revenue)/sum(nb_trans) as avg_basket,
+sum(revenue)/count(nb_trans) as avg_basket,
 sum(margin_op) as margin_op,
 sum(purchase_cost) as total_purchase_cost,
 sum(shipping_fee) as total_shipping_fee,
