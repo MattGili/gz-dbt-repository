@@ -54,9 +54,9 @@ sources:
               column_name: orders_id
           - not_null:
               column_name: [orders_id,shipping_fee,logcost,ship_cost]
+
 models:
-  - name: intermediate
-    tables:
+
       - name: int_sales_margin
         description: table inter pour calculer plus facilement les finances KPI
         columns:
@@ -84,9 +84,10 @@ models:
             description: nombre de client distinct par jour
         tests:
           - unique:
-            column_name: orders_id
+              column_name: orders_id
           - not_null:
-            column_name: [orders_id,date_date,margin_op,revenue,qty,purchase_cost,margin,shipping_fee,logcost,ship_cost,nb_trans]
+              column_name: [orders_id,date_date,margin_op,revenue,qty,purchase_cost,margin,shipping_fee,logcost,ship_cost,nb_trans]
+
       - name: finance_days
         description: finance KPI
         columns:
@@ -109,8 +110,6 @@ models:
           - name: total_quantity_sold
             description: C'est la quantité de produits vendu par jour
         tests:
-          - unique:
-            column_name: orders_id
           - not_null:
-            column_name: [date_date,nb_transactions,total_revenue,avg_basket,margin_op,total_purchase_cost,total_shipping_fee,total_logcost,total_quantity_sold]
+              column_name: [date_date,nb_transactions,total_revenue,avg_basket,margin_op,total_purchase_cost,total_shipping_fee,total_logcost,total_quantity_sold]
           
