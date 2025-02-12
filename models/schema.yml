@@ -56,7 +56,6 @@ sources:
               column_name: [orders_id,shipping_fee,logcost,ship_cost]
 
 models:
-
       - name: int_sales_margin
         description: table inter pour calculer plus facilement les finances KPI
         columns:
@@ -87,7 +86,6 @@ models:
               column_name: orders_id
           - not_null:
               column_name: [orders_id,date_date,margin_op,revenue,qty,purchase_cost,margin,shipping_fee,logcost,ship_cost,nb_trans]
-
       - name: finance_days
         description: finance KPI
         columns:
