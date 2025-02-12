@@ -54,3 +54,63 @@ sources:
               column_name: orders_id
           - not_null:
               column_name: [orders_id,shipping_fee,logcost,ship_cost]
+models:
+  - name: intermediate
+    tables:
+      - name: int_sales_margin
+        description: table inter pour calculer plus facilement les finances KPI
+        columns:
+          - name: orders_id
+            description: c'est les order id par jour
+          - name: date_date
+            description: date
+          - name: margin_op
+            description: C'est les revenue plus shipping_cost moins les logcost, ship cost et purchase cost par jour
+          - name: revenue
+            description: somme des revenues par jour
+          - name: qty
+            description: C'est la quantité de produits vendu par jour
+          - name: purchase_cost
+            description: Cout d'achat par jour
+          - name: margin
+            description: Marge par jour 
+          - name: shipping_fee
+            description: Les shipping_fee par jour
+          - name: logcost
+            description: Les logcost par jour
+          - name: ship_cost
+            description: les ship cost par jour
+          - name: nb_trans
+            description: nombre de client distinct par jour
+        tests:
+          - unique:
+            column_name: orders_id
+          - not_null:
+            column_name: [orders_id,date_date,margin_op,revenue,qty,purchase_cost,margin,shipping_fee,logcost,ship_cost,nb_trans]
+      - name: finance_days
+        description: finance KPI
+        columns:
+          - name: date_date 
+            description: date
+          - name: nb_transactions
+            description: nombre de client distinct par jour
+          - name: total_revenue
+            description: somme des revenues par jour
+          - name: avg_basket
+            description: La moyenne des paniers des clients par jour Total des revenue par le nombre de cleint sur un jour
+          - name: margin_op
+            description: C'est les revenue plus shipping_cost moins les logcost, ship cost et purchase cost par jour
+          - name: total_purchase_cost
+            description: Cout d'achat par jour
+          - name: total_shipping_fee
+            description: Les shipping_fee par jour
+          - name: total_logcost
+            description: Les logcost par jour
+          - name: total_quantity_sold
+            description: C'est la quantité de produits vendu par jour
+        tests:
+          - unique:
+            column_name: orders_id
+          - not_null:
+            column_name: [date_date,nb_transactions,total_revenue,avg_basket,margin_op,total_purchase_cost,total_shipping_fee,total_logcost,total_quantity_sold]
+          
