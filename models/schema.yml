@@ -2,8 +2,113 @@ sources:
   - name: gz_raw_data
     tables: 
       - name: sales
-        identifier: raw_gz_sales
+        identifier: ventes_brutes_gz
+        description: vente des produits greenweez, chaque ligne représente une orders_id
+        columns:
+          - name: date_date
+            description: date d'achat
+          - name: orders_id
+            description: order du client qui est unique 
+          - name: product_id
+            description: fait référence au produit que le client à acheté, on peut le retrouver dans la table product
+          - name: revenue
+            description: revenu du produit par order
+          - name: quantity
+            description: quantité de produit acheté
+        tests:
+          - unique:
+              column_name: "(orders_id || '-' || pdt_id)"
+          - not_null:
+              column_name: [date_date,orders_id,pdt_id,revenue,quantity]
+        #freshness testing
+        loaded_at_field: "CAST(date_date AS TIMESTAMP)"
+        freshness:
+          warn_after: {count: 90, period: day }
       - name: product
-        identifier: raw_gz_product
+        identifier: produit_brut_gz
+        description: table des produits qui nous permet de connaitre les infos sur les produits
+        columns:
+          - name: products_id
+            description: id unique du produit primary key
+          - name: purchase_price
+            description: prix de vente du produit
+        tests:
+          - unique:
+              column_name: products_id
+          - not_null:
+              column_name: [products_id,purchase_price]
       - name: ship
-        identifier: raw_gz_ship
+        identifier: navire_gz_brut
+        description: table des shiping cost
+        columns:
+          - name: orders_id
+            description: clé secondaire de sales
+          - name: shipping_fee
+            description: frais d'envoi que le client paie
+          - name: logcost
+            description: frais de logistic de la commende 
+          - name: ship_cost
+            description: frais d'envoi que greenweez paie
+        tests:
+          - unique:
+              column_name: orders_id
+          - not_null:
+              column_name: [orders_id,shipping_fee,logcost,ship_cost]
+
+models:
+
+      - name: int_sales_margin
+        description: table inter pour calculer plus facilement les finances KPI
+        columns:
+          - name: orders_id
+            description: c'est les order id par jour
+          - name: date_date
+            description: date
+          - name: margin_op
+            description: C'est les revenue plus shipping_cost moins les logcost, ship cost et purchase cost par jour
+          - name: revenue
+            description: somme des revenues par jour
+          - name: qty
+            description: C'est la quantité de produits vendu par jour
+          - name: purchase_cost
+            description: Cout d'achat par jour
+          - name: margin
+            description: Marge par jour 
+          - name: shipping_fee
+            description: Les shipping_fee par jour
+          - name: logcost
+            description: Les logcost par jour
+          - name: ship_cost
+            description: les ship cost par jour
+          - name: nb_trans
+            description: nombre de client distinct par jour
+        tests:
+          - unique:
+              column_name: orders_id
+          - not_null:
+              column_name: [orders_id,date_date,margin_op,revenue,qty,purchase_cost,margin,shipping_fee,logcost,ship_cost,nb_trans]
+      - name: finance_days
+        description: finance KPI
+        columns:
+          - name: date_date 
+            description: date
+          - name: nb_transactions
+            description: nombre de client distinct par jour
+          - name: total_revenue
+            description: somme des revenues par jour
+          - name: avg_basket
+            description: La moyenne des paniers des clients par jour Total des revenue par le nombre de cleint sur un jour
+          - name: margin_op
+            description: C'est les revenue plus shipping_cost moins les logcost, ship cost et purchase cost par jour
+          - name: total_purchase_cost
+            description: Cout d'achat par jour
+          - name: total_shipping_fee
+            description: Les shipping_fee par jour
+          - name: total_logcost
+            description: Les logcost par jour
+          - name: total_quantity_sold
+            description: C'est la quantité de produits vendu par jour
+        tests:
+          - not_null:
+              column_name: [date_date,nb_transactions,total_revenue,avg_basket,margin_op,total_purchase_cost,total_shipping_fee,total_logcost,total_quantity_sold]
+          
